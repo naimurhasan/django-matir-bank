@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework import status    
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.renderers import JSONRenderer
+from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from .models import Card
 from .serializers import CardSerializer
 from api import serializers
@@ -42,8 +43,10 @@ def cardCreate(request):
 
     if serializer.is_valid():
         serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATE)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response(serializer.data)
+    
 
 @api_view(('POST',))
 def cardUpdate(request, pk):
