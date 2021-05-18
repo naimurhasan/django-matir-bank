@@ -16,11 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
-from django.views import debug
+from api import views as api_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', debug.default_urlconf),
-    path('api/', include('api.urls')),
+    path('', api_views.apiOverview),
     path('accounts/', include('accounts.urls')),
+    path('cards/', include('cards.urls')),
 ]
