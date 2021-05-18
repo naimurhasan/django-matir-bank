@@ -137,3 +137,5 @@ REST_FRAMEWORK = {
         'knox.auth.TokenAuthentication',
     ]
 }
+
+ALLOWED_HOSTS = ['192.168.1.4']
