@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from rest_framework import status    
+from rest_framework import status, generics    
 from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer
+
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from .models import Card
 from .serializers import CardSerializer
-from api import serializers
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
 # Create your views here.
 
 @api_view(('GET',))
@@ -37,14 +38,25 @@ def cardDetail(request, pk):
     serializer = CardSerializer(card, many=False)
     return Response(serializer.data)
 
-@api_view(('POST',))
-def cardCreate(request):
-    serializer = CardSerializer(data=request.data)
+class CardCreate(generics.CreateAPIView):
+    
+    serializer_class = CardSerializer
 
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATE)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, format=None):
+        serializer = CardSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# @api_view(('POST',))
+# def cardCreate(request):
+#     serializer = CardSerializer(data=request.data)
+
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
 
