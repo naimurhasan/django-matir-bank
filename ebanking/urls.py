@@ -21,5 +21,6 @@ from django.views import debug
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', debug.default_urlconf),
-    path('api/', include('api.urls'))
+    path('api/', include('api.urls')),
+    path('accounts/', include('accounts.urls')),
 ]
