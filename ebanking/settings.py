@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
 from pathlib import Path
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -142,3 +143,5 @@ REST_FRAMEWORK = {
 }
 
 ALLOWED_HOSTS = ['ebanking-api.herokuapp.com', 'localhost', '192.168.1.4']
+
+django_heroku.settings(locals())
