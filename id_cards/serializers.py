@@ -1,18 +1,17 @@
 from rest_framework import serializers
-from .models import Photo
+from .models import IdCard
 
-class PhotoSerializer(serializers.ModelSerializer):
+class IdCardSerializer(serializers.ModelSerializer):
     
     user = serializers.ReadOnlyField(source='user.id')
 
     class Meta:
-        model = Photo
+        model = IdCard
         fields = '__all__'
 
-class PhotoMutationSerializer(serializers.ModelSerializer):
+class IdCardMutationSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Photo
+        model = IdCard
         fields = '__all__'
-
     

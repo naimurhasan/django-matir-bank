@@ -15,10 +15,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Photo',
+            name='IdCard',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='photo/')),
+                ('type', models.CharField(choices=[('NID', 'National Id Card'), ('PASSPORT', 'Passport'), ('BIRTH_CERTIFICATE', 'Birth Certificate'), ('DRIVING_LICENSE', 'Driving License'), ('OTHER', 'Other')], max_length=17)),
+                ('image', models.ImageField(upload_to='id_card/')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),

@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from .models import Card
-from .serializers import CardSerializer
+from .serializers import CardSerializer, CardPostSerializer
 from .permissions import IsOwnerOrReadOnly
 from django.http import Http404
 
@@ -28,7 +28,7 @@ class CarList(APIView):
         request.data._mutable = True
         request.data['user'] = request.user.id
 
-        serializer = CardSerializer(data=request.data)
+        serializer = CardPostSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -66,7 +66,7 @@ class SingleCard(APIView):
         request.data._mutable = True
         request.data['user'] = request.user.id
         
-        serializer = CardSerializer(card, data=request.data)
+        serializer = CardPostSerializer(card, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

@@ -9,4 +9,10 @@ class CardSerializer(serializers.ModelSerializer):
         model = Card
         fields = '__all__'
 
+class CardPostSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Card
+        fields = '__all__'
+
     

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'accounts',
     'cards',
     'photos',
+    'id_cards',
 ]
 
 MIDDLEWARE = [
