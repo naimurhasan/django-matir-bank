@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'accounts',
     'cards',
+    'photos',
 ]
 
 MIDDLEWARE = [
