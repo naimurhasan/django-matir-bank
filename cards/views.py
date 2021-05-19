@@ -12,14 +12,14 @@ class CarList(APIView):
     List all cards or create new instance.
     """
     serializer_class = CardSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
     def get(self, request, format=None):
-        # cards = Card.objects.filter(user=request.user)
-        cards = Card.objects.all()
+        cards = Card.objects.filter(user=request.user)
+        # cards = Card.objects.all()
         serializer = CardSerializer(cards, many=True)
         return Response(serializer.data)
 
