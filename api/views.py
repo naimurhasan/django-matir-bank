@@ -7,6 +7,8 @@ def apiOverview(request):
     api_urls = {
         'Card [List, Create]':'/cards',
         'Card [Single]':'/cards/<int:id>',
+        'Photo [Get, Create, Update]':'/photo',
+        'Card [Single]':'/cards/<int:id>',
         "Accounts: [Register]" : "accounts/register/",
         "Accounts: [Login]" : "accounts/login/",
         "Accounts: [Logout]" : "accounts/logout/",
