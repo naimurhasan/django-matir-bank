@@ -41,11 +41,15 @@ class AccountManager(BaseUserManager):
 class Account(AbstractBaseUser):
     phone = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
+    balance = models.DecimalField(max_digits=19, decimal_places=10, default=0.00)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False) # a admin user; non super-user
     is_admin = models.BooleanField(default=False)
     
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = ['name']
 

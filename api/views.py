@@ -9,10 +9,11 @@ def apiOverview(request):
         'Card [Update, Delete]':'/cards/<int:id>',
         'Photo [Get, Post]':'/photo',
         'Id Card [Get, Post]':'/id_card',
-        "Accounts: [Register]" : "accounts/register/",
-        "Accounts: [Login]" : "accounts/login/",
-        "Accounts: [Logout]" : "accounts/logout/",
-        "Accounts: [Logout All]" : "accounts/logoutall/"
+        "Accounts: [Get]" : "/accounts",
+        "Accounts: [Register]" : "/accounts/register/",
+        "Accounts: [Login]" : "/accounts/login/",
+        "Accounts: [Logout]" : "/accounts/logout/",
+        "Accounts: [Logout All]" : "/accounts/logoutall/"
     }
 
     return Response(api_urls)
