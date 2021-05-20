@@ -1,8 +1,14 @@
-# Matir Bank API
+# Matir Bank - API
+Matir Bank is a demo Mobile Financial Service project.
 
-<img src="https://github.com/matir-bank/matirbank-django/blob/08-transaction-api/Screenshot_49.jpg?raw=true" width="600" />
+<img src="screenshot.jpg" width="600" />
 
-### CURRENT STRUCTURE
+## API Demo
+
+https://matirbank-api.herokuapp.com/
+
+### File Structure
+
 ├───accounts<br />
 │   ├───migrations<br />
 ├───api<br />
