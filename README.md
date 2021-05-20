@@ -1,7 +1,7 @@
 # Matir Bank - API
 Matir Bank is a demo Mobile Financial Service project.
 
-<img src="screenshot.jpg" width="600" />
+<img src="screenshot.jpg" />
 
 ## API Demo
 
