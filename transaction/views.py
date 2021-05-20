@@ -1,6 +1,4 @@
-from django.db.models.fields import DecimalField
 from cards.models import Card
-from django.db import models
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -8,8 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Transaction
 from .serializers import TransactionSerializer, AddFundSerializer
-from django.http import Http404
 from decimal import Decimal
+from datetime import datetime
 # Create your views here.
 class TransactionView(APIView):
     """
@@ -72,6 +70,7 @@ class AddFundView(APIView):
             
             serializer.save(destination=request.user.phone, type='Card')
             request.user.balance = request.user.balance+Decimal(request.data['amount'])
+            request.user.balance_last_update = datetime.now()
             request.user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
