@@ -42,6 +42,7 @@ class Account(AbstractBaseUser):
     phone = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     balance = models.DecimalField(max_digits=19, decimal_places=10, default=0.00)
+    balance_last_update = models.DateTimeField()
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False) # a admin user; non super-user

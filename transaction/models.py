@@ -5,4 +5,4 @@ class Transaction(models.Model):
     source = models.CharField(max_length=255, null=True)
     destination = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
-    amount = models.DecimalField(max_digits=19, decimal_places=10, default=0.00)
+    amount = models.DecimalField(max_digits=19, decimal_places=10)

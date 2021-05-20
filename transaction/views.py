@@ -24,6 +24,23 @@ class TransactionView(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
+        
+        serializer = TransactionSerializer(data=request.data);
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+
+        # check if have balance more than amount
+        if request.user.balance < int(request.data['amount']):
+            return Response({'message': 'Not Enough Balance.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # check if destination exist
+        
+        # mutate transaction source
+
+        # save transaction 
+
+        # calculatate balance
+
         return Response('OK')
 
 class AddFundView(APIView):
@@ -49,10 +66,9 @@ class AddFundView(APIView):
         serializer = TransactionSerializer(data=request.data)
         
         if serializer.is_valid():
+            serializer.save()
             request.user.balance = request.user.balance+int(request.data['amount'])
             request.user.save()
-
-            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
