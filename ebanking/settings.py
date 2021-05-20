@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'cards',
     'photos',
     'id_cards',
+    'transaction',
 ]
 
 MIDDLEWARE = [

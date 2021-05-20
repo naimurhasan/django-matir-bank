@@ -9,6 +9,8 @@ def apiOverview(request):
         'Card [Update, Delete]':'/cards/<int:id>',
         'Photo [Get, Post]':'/photo',
         'Id Card [Get, Post]':'/id_card',
+        'Transaction [Get, Post]':'/transaction',
+        'Add Fund [Post]':'/add-fund',
         "Accounts: [Get]" : "/accounts",
         "Accounts: [Register]" : "/accounts/register/",
         "Accounts: [Login]" : "/accounts/login/",

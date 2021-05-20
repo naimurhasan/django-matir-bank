@@ -18,6 +18,7 @@ from django.urls import path
 from django.urls.conf import include
 from django.conf  import settings
 from django.conf.urls.static  import static
+from transaction.views import AddFundView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +27,6 @@ urlpatterns = [
     path('cards/', include('cards.urls')),
     path('photo/', include('photos.urls')),
     path('id_card/', include('id_cards.urls')),
+    path('transaction/', include('transaction.urls')),
+    path('add-fund/', AddFundView.as_view(), name='add-fund'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
