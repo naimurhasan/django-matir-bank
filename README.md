@@ -1,4 +1,4 @@
-# e mobile banking api with django rest frame wrok
+# Matir Bank API
 
 <img src="https://github.com/matir-bank/matirbank-django/blob/08-transaction-api/Screenshot_49.jpg?raw=true" width="600" />
 
