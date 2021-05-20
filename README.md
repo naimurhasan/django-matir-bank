@@ -1,10 +1,13 @@
-# Matir Bank API
+# Matir Bank - API
+Matir Bank is a demo Mobile Financial Service project.
 
-### HEROKU MUST
-- Must Run, `python manage.py makemigrations` in heroku drop down console
-- Must Run, `python manage.py migrate`
+<img src="screenshot.jpg" />
 
-### CURRENT STRUCTURE
+## API Demo
+
+https://matirbank-api.herokuapp.com/
+
+### File Structure
 ├───accounts<br />
 │   ├───migrations<br />
 ├───api<br />
