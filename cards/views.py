@@ -40,7 +40,7 @@ class SingleCard(APIView):
     Retrieve, update or delete a card instance.
     """
     serializer_class = CardSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     
     def get_object(self, pk, user_id):
         try:

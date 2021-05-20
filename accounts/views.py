@@ -1,8 +1,9 @@
+from accounts.models import Account
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core import serializers
-import json
+from django.http import Http404
 
 class AccountOverview(APIView):
     """
@@ -28,3 +29,27 @@ class AccountOverview(APIView):
 
         return Response(account)
 
+
+class SingleAccount(APIView):
+    """
+    Retrieve name of phone.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, phone, user_phone):
+        try:
+            account = Account.objects.get(phone=phone)
+            
+            return account
+            
+        except Account.DoesNotExist:
+            raise Http404
+
+    def get(self, request, phone, format=None):
+        account = self.get_object(phone, request.user.phone)
+        
+        return Response({
+            'name': account.name,
+            'phone': account.phone,
+            'photo':  account.photo_set.all()[:1].values() if account.photo_set.all()[:1] else None
+            })

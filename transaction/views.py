@@ -5,7 +5,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Transaction
-from .serializers import TransactionSerializer, AddFundSerializer
+from accounts.models import Account
+from .serializers import TransactionSerializer, TransactionPostSerializer, AddFundSerializer
 from decimal import Decimal
 from datetime import datetime
 from django.http import Http404
@@ -17,7 +18,7 @@ class TransactionView(APIView):
     """
     Retrive, Create Transaction
     """
-    serializer_class = TransactionSerializer
+    serializer_class = TransactionPostSerializer
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
@@ -29,23 +30,41 @@ class TransactionView(APIView):
 
     def post(self, request, format=None):
         
-        serializer = TransactionSerializer(data=request.data);
+        serializer = TransactionPostSerializer(data=request.data);
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
 
         # check if have balance more than amount
-        if request.user.balance < int(request.data['amount']):
+        if request.user.balance < Decimal(serializer.validated_data['amount']):
             return Response({'detail': 'Not Enough Balance.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        # if self destination
+        if request.user.id == int(serializer.validated_data['destination']):
+            return Response({'detail': 'Can not send to self.'}, status=status.HTTP_400_BAD_REQUEST)
+
         # check if destination exist
+        try:
+            destination = Account.objects.get(phone=serializer.validated_data['destination'])
+            
+        except Account.DoesNotExist:
+            return Response({'detail': 'Destination does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # mutate transaction source
+        # save transaction
+        serializer.save(source=request.user.phone, type="Balance")
 
-        # save transaction 
+        # calculatate both balance
+        request.user.balance = request.user.balance-Decimal(serializer.validated_data['amount'])
+        destination.balance = destination.balance+Decimal(serializer.validated_data['amount'])
+        
+        # last upate both
+        request.user.balance_last_update = datetime.now()
+        destination.balance_last_update = datetime.now()
 
-        # calculatate balance
+        # save both
+        request.user.save()
+        destination.save()
 
-        return Response('OK')
+        return Response(serializer.data)
 
 class SingleTransaction(APIView):
     """
