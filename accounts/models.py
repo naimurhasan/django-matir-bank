@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 class AccountManager(BaseUserManager):
-    def create_user(self, phone, name, password=None):
+    def create_user(self, phone, name, type, password=None,):
         """
         Creates and saves a User with the given email and password.
         """
@@ -14,10 +14,14 @@ class AccountManager(BaseUserManager):
         
         if not name:
             raise ValueError('Users must have a name')
+        
+        if not type:
+            raise ValueError('Users must have a type of Personal or Agent')
 
         user = self.model(
             phone=phone,
             name=name,
+            type=type
         )
 
         user.set_password(password)
@@ -31,6 +35,7 @@ class AccountManager(BaseUserManager):
         user = self.create_user(
             phone,
             name,
+            'PERSONAL',
             password=password,
         )
         user.is_staff = True
@@ -42,7 +47,7 @@ class Account(AbstractBaseUser):
     phone = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     balance = models.DecimalField(max_digits=19, decimal_places=10, default=0.00)
-    balance_last_update = models.DateTimeField()
+    balance_last_update = models.DateTimeField(null=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False) # a admin user; non super-user
@@ -50,6 +55,20 @@ class Account(AbstractBaseUser):
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    PERSONAL = 'PERSONAL'
+    AGENT = 'AGENT'
+    
+
+    ACCOUNT_TYPE_CHOICES = [
+        (PERSONAL, 'Personal'),
+        (AGENT, 'Agent'),
+    ]
+
+    type = models.CharField(
+        max_length=17,
+        choices=ACCOUNT_TYPE_CHOICES,
+    )
 
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = ['name']

@@ -21,6 +21,7 @@ class AccountOverview(APIView):
             'last_login': user.last_login,
             'created_at': user.created_at,
             'updated_at': user.created_at,
+            'balance_last_update': user.balance_last_update,
             'cards': user.card_set.all().values(),
             'photo':  user.photo_set.all()[:1].values() if user.photo_set.all()[:1] else None 
         }

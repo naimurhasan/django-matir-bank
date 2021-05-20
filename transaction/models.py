@@ -6,3 +6,5 @@ class Transaction(models.Model):
     destination = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=19, decimal_places=10)
+    card_id = models.BigIntegerField(null=True)
+    mobile = models.CharField(max_length=255, null=True)

@@ -16,12 +16,15 @@ class TransactionPostSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = '__all__'
 
-class AddFundPreivewSerializer(serializers.ModelSerializer):
+class AddFundSerializer(serializers.ModelSerializer):
 
-    source = serializers.ReadOnlyField()
-    type = serializers.ReadOnlyField()
-    destination = serializers.ReadOnlyField()
+    card_id = serializers.IntegerField(required=True)
 
     class Meta:
         model = Transaction
-        fields = '__all__'
+        fields = ('amount', 'card_id')
+        
+    def validate_amount(self, value):
+        if value < 0:
+            raise serializers.ValidationError('Must Be Positive')
+        return value

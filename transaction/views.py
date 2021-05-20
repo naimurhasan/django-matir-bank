@@ -1,3 +1,4 @@
+from cards.models import Card
 from django.db import models
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -5,8 +6,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Transaction
-from .serializers import TransactionSerializer, AddFundPreivewSerializer
-from transaction import serializers
+from .serializers import TransactionSerializer, AddFundSerializer
+from django.http import Http404
 
 # Create your views here.
 class TransactionView(APIView):
@@ -31,7 +32,7 @@ class TransactionView(APIView):
 
         # check if have balance more than amount
         if request.user.balance < int(request.data['amount']):
-            return Response({'message': 'Not Enough Balance.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'Not Enough Balance.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # check if destination exist
         
@@ -48,25 +49,27 @@ class AddFundView(APIView):
     Add Fund
     """
 
-    serializer_class = AddFundPreivewSerializer
+    serializer_class = AddFundSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
 
-        cards_length = request.user.card_set.all().count()
-
-        if(cards_length < 1):
-            return Response({'message': 'Please add a card first.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        request.data._mutable = True
-        request.data['source'] = None
-        request.data['destination'] = request.user.phone
-        request.data['type'] = 'Card'
-
-        serializer = TransactionSerializer(data=request.data)
+        serializer = AddFundSerializer(data=request.data)
         
         if serializer.is_valid():
-            serializer.save()
+            
+            # check if the card exit
+            try:
+                card = Card.objects.get(pk=serializer.validated_data['card_id'])
+                
+                if card.user_id != request.user.id:
+                    return Response({'detail': 'Card Not Found'}, status=status.HTTP_400_BAD_REQUEST)
+  
+            except Card.DoesNotExist:
+                return Response({'detail': 'Card Not Found'}, status=status.HTTP_400_BAD_REQUEST)
+
+            
+            serializer.save(destination=request.user.phone, type='Card')
             request.user.balance = request.user.balance+int(request.data['amount'])
             request.user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
