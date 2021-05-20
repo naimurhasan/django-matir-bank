@@ -4,8 +4,6 @@ from .models import Transaction
 
 class TransactionSerializer(serializers.ModelSerializer):
 
-    source = serializers.ReadOnlyField()
-
     class Meta:
         model = Transaction
         fields = '__all__'
@@ -14,7 +12,8 @@ class TransactionPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = '__all__'
+        fields = ('destination', 'amount')
+
 
 class AddFundSerializer(serializers.ModelSerializer):
 

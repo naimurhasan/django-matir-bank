@@ -5,4 +5,5 @@ from . import views
 
 urlpatterns = [
     path('', views.TransactionView.as_view(), name="transaction-list"),
+    path('<str:pk>/', views.SingleTransaction.as_view(), name="transaction-instance"),
 ]

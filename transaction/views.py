@@ -8,6 +8,10 @@ from .models import Transaction
 from .serializers import TransactionSerializer, AddFundSerializer
 from decimal import Decimal
 from datetime import datetime
+from django.http import Http404
+# for or query
+from django.db.models import Q
+
 # Create your views here.
 class TransactionView(APIView):
     """
@@ -17,7 +21,7 @@ class TransactionView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        transactions = Transaction.objects.all()
+        transactions = Transaction.objects.filter(Q(source=request.user.phone) | Q(destination=request.user.phone))
 
         serializer = TransactionSerializer(transactions, many=True)
 
@@ -42,6 +46,30 @@ class TransactionView(APIView):
         # calculatate balance
 
         return Response('OK')
+
+class SingleTransaction(APIView):
+    """
+    Retrieve transaction instance.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk, user_phone):
+        try:
+            transaction = Transaction.objects.get(pk=pk)
+            
+            if transaction.destination != user_phone and transaction.source != user_phone:
+                raise Http404
+            
+            return transaction
+            
+        except transaction.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        transaction = self.get_object(pk, request.user.phone)
+        serializer = TransactionSerializer(transaction)
+        return Response(serializer.data)
+    
 
 class AddFundView(APIView):
     """
