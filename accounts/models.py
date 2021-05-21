@@ -58,11 +58,12 @@ class Account(AbstractBaseUser):
 
     PERSONAL = 'PERSONAL'
     AGENT = 'AGENT'
-    
+    MERCHANT = 'MERCHANT'
 
     ACCOUNT_TYPE_CHOICES = [
         (PERSONAL, 'Personal'),
         (AGENT, 'Agent'),
+        (MERCHANT, 'Merchant'),
     ]
 
     type = models.CharField(
