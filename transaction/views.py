@@ -1,3 +1,4 @@
+from matir_bank import response_maker
 from cards.models import Card
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -26,28 +27,28 @@ class TransactionView(APIView):
 
         serializer = TransactionSerializer(transactions, many=True)
 
-        return Response(serializer.data)
+        return response_maker.Ok(serializer.data)
 
     def post(self, request, format=None):
         
         serializer = TransactionPostSerializer(data=request.data);
         if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+            return response_maker.Error(serializer.errors) 
 
         # check if have balance more than amount
         if request.user.balance < Decimal(serializer.validated_data['amount']):
-            return Response({'detail': 'Not Enough Balance.'}, status=status.HTTP_400_BAD_REQUEST)
+            return response_maker.Error({'detail': 'Not Enough Balance.'})
 
         # if self destination
         if request.user.id == int(serializer.validated_data['destination']):
-            return Response({'detail': 'Can not send to self.'}, status=status.HTTP_400_BAD_REQUEST)
+            return response_maker.Error({'detail': 'Can not send to self.'})
 
         # check if destination exist
         try:
             destination = Account.objects.get(phone=serializer.validated_data['destination'])
             
         except Account.DoesNotExist:
-            return Response({'detail': 'Destination does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+            return response_maker.Error({'detail': 'Destination does not exist.'})
         
         # save transaction
         serializer.save(source=request.user.phone, type="Balance")
@@ -64,7 +65,7 @@ class TransactionView(APIView):
         request.user.save()
         destination.save()
 
-        return Response(serializer.data)
+        return response_maker.Ok(serializer.data)
 
 class SingleTransaction(APIView):
     """
@@ -77,17 +78,21 @@ class SingleTransaction(APIView):
             transaction = Transaction.objects.get(pk=pk)
             
             if transaction.destination != user_phone and transaction.source != user_phone:
-                raise Http404
+                return None
             
             return transaction
             
-        except transaction.DoesNotExist:
-            raise Http404
+        except Transaction.DoesNotExist:
+            return None
 
     def get(self, request, pk, format=None):
         transaction = self.get_object(pk, request.user.phone)
+
+        if not transaction:
+            return response_maker.NotFound({"detail": "Not found."})
+
         serializer = TransactionSerializer(transaction)
-        return Response(serializer.data)
+        return response_maker.Ok(serializer.data)
     
 
 class AddFundView(APIView):
@@ -109,16 +114,16 @@ class AddFundView(APIView):
                 card = Card.objects.get(pk=serializer.validated_data['card_id'])
                 
                 if card.user_id != request.user.id:
-                    return Response({'detail': 'Card Not Found'}, status=status.HTTP_400_BAD_REQUEST)
+                    return response_maker.NotFound({'detail': 'Card Not Found'})
   
             except Card.DoesNotExist:
-                return Response({'detail': 'Card Not Found'}, status=status.HTTP_400_BAD_REQUEST)
+                return response_maker.NotFound({'detail': 'Card Not Found'})
 
             
             serializer.save(destination=request.user.phone, type='Card')
             request.user.balance = request.user.balance+Decimal(request.data['amount'])
             request.user.balance_last_update = datetime.now()
             request.user.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return response_maker.Ok(serializer.data, status=status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return response_maker.Error(serializer.errors)

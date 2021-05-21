@@ -6,6 +6,7 @@ from .models import Card
 from .serializers import CardSerializer, CardPostSerializer
 from .permissions import IsOwnerOrReadOnly
 from django.http import Http404
+from matir_bank import response_maker
 
 class CarList(APIView):
     """
@@ -21,7 +22,7 @@ class CarList(APIView):
         cards = Card.objects.filter(user=request.user)
         # cards = Card.objects.all()
         serializer = CardSerializer(cards, many=True)
-        return Response(serializer.data)
+        return response_maker.Ok(serializer.data)
 
     def post(self, request, format=None):
      
@@ -31,9 +32,9 @@ class CarList(APIView):
         serializer = CardPostSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return response_maker.Ok(serializer.data)
             
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return response_maker.Error(serializer.errors)
 
 class SingleCard(APIView):
     """
@@ -42,26 +43,34 @@ class SingleCard(APIView):
     serializer_class = CardSerializer
     permission_classes = [IsAuthenticated, IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     
+    
+
     def get_object(self, pk, user_id):
         try:
             card = Card.objects.get(pk=pk)
             
             if card.user_id != user_id:
-                raise Http404
+                return None
             
             return card
             
         except Card.DoesNotExist:
-            raise Http404
+            return None
 
     def get(self, request, pk, format=None):
         card = self.get_object(pk, request.user.id)
+
+        if not card:
+            return response_maker.NotFound({"detail": "Not found."})
+
         serializer = CardSerializer(card)
-        return Response(serializer.data)
+        return response_maker.Ok(serializer.data)
 
     def put(self, request, pk, format=None):
         card = self.get_object(pk, request.user.id)
         
+        if not card:
+            return response_maker.NotFound({"detail": "Not found."})
         
         request.data._mutable = True
         request.data['user'] = request.user.id
@@ -69,10 +78,12 @@ class SingleCard(APIView):
         serializer = CardPostSerializer(card, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response_maker.Ok(serializer.data)
+        return response_maker.Error(serializer.errors)
     
     def delete(self, request, pk, format=None):
         card = self.get_object(pk, request.user.id)
+        if not card:
+            return response_maker.NotFound({"detail": "Not found."})
         card.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return response_maker.Ok({"detail": "Deleted"})

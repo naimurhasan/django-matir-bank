@@ -25,3 +25,6 @@ def Ok(data):
 
 def Error(error):
 	return _response(400, error=error)
+
+def NotFound(error):
+	return _response(404, error=error)

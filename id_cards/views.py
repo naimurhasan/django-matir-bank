@@ -1,3 +1,4 @@
+from matir_bank import response_maker
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import IdCard
@@ -22,7 +23,7 @@ class SingleIdCard(APIView):
             id_card = id_cards[0]
         
         serializer = IdCardSerializer(id_card, many=False)
-        return Response(serializer.data)
+        return response_maker.Ok(serializer.data)
 
     def post(self, request, format=None):
         
@@ -37,7 +38,7 @@ class SingleIdCard(APIView):
             # create new
             if(len(id_cards) < 1):
                 serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return response_maker.Ok(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 # update existing
                 id_card = id_cards[0]
@@ -47,6 +48,6 @@ class SingleIdCard(APIView):
                 os.remove(id_card.image.path)
 
                 serializer.save()
-                return Response(serializer.data)
+                return response_maker.Ok(serializer.data)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return response_maker.Error(serializer.errors)

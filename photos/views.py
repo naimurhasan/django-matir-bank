@@ -1,3 +1,4 @@
+from matir_bank import response_maker
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Photo
@@ -22,7 +23,7 @@ class SinglePhoto(APIView):
             photo = photos[0]
         
         serializer = PhotoSerializer(photo, many=False)
-        return Response(serializer.data)
+        return response_maker.Ok(serializer.data)
 
     def post(self, request, format=None):
         
@@ -37,7 +38,7 @@ class SinglePhoto(APIView):
             # create new
             if(len(photos) < 1):
                 serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return response_maker.Ok(serializer.data)
             else:
                 # update existing
                 photo = photos[0]
@@ -47,6 +48,6 @@ class SinglePhoto(APIView):
                 os.remove(photo.image.path)
 
                 serializer.save()
-                return Response(serializer.data)
+                return response_maker.Ok(serializer.data)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return response_maker.Error(serializer.errors)

@@ -1,3 +1,4 @@
+from matir_bank import response_maker
 from accounts.models import Account
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -27,7 +28,7 @@ class AccountOverview(APIView):
             'photo':  user.photo_set.all()[:1].values() if user.photo_set.all()[:1] else None 
         }
 
-        return Response(account)
+        return response_maker.Ok(account)
 
 
 class SingleAccount(APIView):
@@ -48,7 +49,7 @@ class SingleAccount(APIView):
     def get(self, request, phone, format=None):
         account = self.get_object(phone, request.user.phone)
         
-        return Response({
+        return response_maker.Ok({
             'name': account.name,
             'phone': account.phone,
             'photo':  account.photo_set.all()[:1].values() if account.photo_set.all()[:1] else None
