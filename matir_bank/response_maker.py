@@ -12,10 +12,16 @@ GLBOAL RULE
 	}
 }
 """
-def response(statusCode, data = {}, error = {}):
+def _response(statusCode, data = {}, error = {}):
 	
      return Response({
          'status': statusCode,
          'data' : data,
          'error': error,
      }, status=status.HTTP_200_OK)
+
+def Ok(data):
+	return _response(200, data=data)
+
+def Error(error):
+	return _response(400, error=error)

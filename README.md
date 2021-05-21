@@ -13,7 +13,7 @@ https://matirbank-api.herokuapp.com/
 ├───api<br />
 ├───cards<br />
 │   ├───migrations<br />
-├───ebanking<br />
+├───matir_bank<br />
 ├───id_cards<br />
 │   ├───migrations<br />
 ├───media<br />
