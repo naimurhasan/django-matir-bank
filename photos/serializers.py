@@ -20,6 +20,8 @@ class PhotoPathSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_image(self, obj):
+        if type(obj).__name__ == "dict":
+            return None
         return '{}{}{}'.format(get_current_host(self.context['request'])[:-1], settings.MEDIA_URL, obj.image)
 
 

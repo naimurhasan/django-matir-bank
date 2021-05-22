@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core import serializers
 from django.http import Http404
+from django.conf import settings
+from matir_bank.core.hostname import get_current_host
 
 class AccountOverview(APIView):
     """
@@ -14,6 +16,14 @@ class AccountOverview(APIView):
 
     def get(self, request, format=None):
         user = request.user
+        photo = user.photo_set.all()[:1].values() if user.photo_set.all()[:1] else None
+        photoData = None
+
+        if photo != None:
+            photoData = {}
+            photoData['image'] = get_current_host(request)[:-1]+settings.MEDIA_URL+photo[0]['image']
+            photoData['created_at'] = photo[0]['created_at']
+            photoData['updated_at'] = photo[0]['updated_at']
 
         account = {
             'id' : user.id,
@@ -25,7 +35,7 @@ class AccountOverview(APIView):
             'updated_at': user.created_at,
             'balance_last_update': user.balance_last_update,
             'cards': user.card_set.all().values(),
-            'photo':  user.photo_set.all()[:1].values() if user.photo_set.all()[:1] else None 
+            'photo':  photoData
         }
 
         return response_maker.Ok(account)
@@ -37,7 +47,7 @@ class SingleAccount(APIView):
     """
     permission_classes = [IsAuthenticated]
 
-    def get_object(self, phone, user_phone):
+    def get_object(self, phone):
         try:
             account = Account.objects.get(phone=phone)
             

@@ -38,7 +38,7 @@ class SingleIdCard(APIView):
             # create new
             if(len(id_cards) < 1):
                 serializer.save()
-                return response_maker.Ok(serializer.data, status=status.HTTP_201_CREATED)
+                return response_maker.Ok(serializer.data)
             else:
                 # update existing
                 id_card = id_cards[0]
