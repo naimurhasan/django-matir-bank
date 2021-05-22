@@ -1,1 +1,1 @@
-web: gunicorn matir_bank.wsgi --log-file - 
+web: gunicorn matir_bank.wsgi:application --log-file - 
