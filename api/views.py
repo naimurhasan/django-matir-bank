@@ -12,6 +12,7 @@ def apiOverview(request):
         'Transaction [List, Create]':'/transaction',
         'Transaction [Details]':'/transaction/<int:id>',
         'Add Fund [Post]':'/add-fund',
+        'Mobile Topup [Post]':'/top-up',
         "Accounts: [Get] (Self Account Info)" : "/accounts",
         "Any account name, photo: [Get]" : "/accounts/phone",
         "Accounts: [Register]" : "/accounts/register/",

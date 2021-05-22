@@ -7,7 +7,10 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Transaction
 from accounts.models import Account
-from .serializers import TransactionSerializer, TransactionPostSerializer, AddFundSerializer
+from .serializers import ( TransactionSerializer,
+                            TransactionPostSerializer,
+                            AddFundSerializer,
+                            TopUpSerializer,)
 from decimal import Decimal
 from datetime import datetime
 from django.http import Http404
@@ -76,7 +79,7 @@ class SingleTransaction(APIView):
     def get_object(self, pk, user_phone):
         try:
             transaction = Transaction.objects.get(pk=pk)
-            
+            # Return None if This Transaction Doesn't belong to logged in user
             if transaction.destination != user_phone and transaction.source != user_phone:
                 return None
             
@@ -124,6 +127,39 @@ class AddFundView(APIView):
             request.user.balance = request.user.balance+Decimal(request.data['amount'])
             request.user.balance_last_update = datetime.now()
             request.user.save()
-            return response_maker.Ok(serializer.data, status=status.HTTP_201_CREATED)
+            return response_maker.Ok(serializer.data)
 
         return response_maker.Error(serializer.errors)
+
+class MobileTopup(APIView):
+    """
+    DO MOBILE TOPUP
+    """
+
+    serializer_class = TopUpSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = TopUpSerializer(data=request.data)
+        if serializer.is_valid():
+
+            # check if have balance
+            if request.user.balance < Decimal(serializer.validated_data['amount']):
+                return response_maker.Error({'detail': 'Not Enough Balance.'})
+
+             # save transaction
+            serializer.save()
+
+            # calculatate both balance
+            request.user.balance = request.user.balance-Decimal(serializer.validated_data['amount'])
+            
+            # last upate both
+            request.user.balance_last_update = datetime.now()
+            
+            # save both
+            request.user.save()
+
+            return response_maker.Ok(serializer.data)
+
+        return response_maker.Error(serializer.errors)
+

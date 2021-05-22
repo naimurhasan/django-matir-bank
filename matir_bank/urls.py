@@ -18,7 +18,7 @@ from django.urls import path
 from django.urls.conf import include
 from django.conf  import settings
 from django.conf.urls.static  import static
-from transaction.views import AddFundView
+from transaction.views import AddFundView, MobileTopup
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,4 +29,5 @@ urlpatterns = [
     path('id_card/', include('id_cards.urls')),
     path('transaction/', include('transaction.urls')),
     path('add-fund/', AddFundView.as_view(), name='add-fund'),
+    path('top-up/', MobileTopup.as_view(), name="topup"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
