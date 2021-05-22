@@ -6,7 +6,7 @@ from .models import Card
 from .serializers import CardSerializer, CardPostSerializer
 from .permissions import IsOwnerOrReadOnly
 from django.http import Http404
-from matir_bank import response_maker
+from matir_bank.core import response_maker
 
 class CarList(APIView):
     """

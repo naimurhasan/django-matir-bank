@@ -1,4 +1,4 @@
-from matir_bank import response_maker
+from matir_bank.core import response_maker
 from accounts.models import Account
 from rest_framework.views import APIView
 from rest_framework.response import Response

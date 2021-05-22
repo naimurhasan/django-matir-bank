@@ -1,8 +1,9 @@
-from matir_bank import response_maker
+from matir_bank.core.hostname import get_current_host
+from matir_bank.core import response_maker
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Photo
-from .serializers import PhotoSerializer, PhotoMutationSerializer
+from .serializers import PhotoSerializer, PhotoMutationSerializer, PhotoPathSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 import os
@@ -21,8 +22,8 @@ class SinglePhoto(APIView):
         photo = {'user': request.user, 'id': None, 'image': None}
         if(len(photos) > 0):
             photo = photos[0]
-        
-        serializer = PhotoSerializer(photo, many=False)
+            
+        serializer = PhotoPathSerializer(photo, many=False, context={'request': request})
         return response_maker.Ok(serializer.data)
 
     def post(self, request, format=None):

@@ -11,7 +11,7 @@ from django.contrib.auth import login
 from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
-from matir_bank import response_maker
+from matir_bank.core import response_maker
 
 # from django.contrib.auth.models import User
 
