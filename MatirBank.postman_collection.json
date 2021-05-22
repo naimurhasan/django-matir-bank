@@ -1,0 +1,183 @@
+{
+	"info": {
+		"_postman_id": "fd7cdc56-76b5-4c41-bc94-f5a4bd1da087",
+		"name": "MatirBank",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "HomeView",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Home Return Success', () => {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://matirbank-api.herokuapp.com/",
+					"protocol": "https",
+					"host": [
+						"matirbank-api",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accounts Not Login Error",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Accounts 401 As Not Logged In', () => {\r",
+							"    pm.response.to.have.status(401)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://matirbank-api.herokuapp.com/accounts/",
+					"protocol": "https",
+					"host": [
+						"matirbank-api",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"accounts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register Account",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"epchTime = new Date().getTime()\r",
+							"pm.environment.set('phone', epchTime)"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Register End Point Status 200', () => {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test('Account Created', () => {\r",
+							"    myResponse = pm.response.json()\r",
+							"    \r",
+							"    pm.expect(myResponse.status).to.eql(200)\r",
+							"\r",
+							"    token = myResponse.data.token\r",
+							"    pm.environment.set('token', token)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"phone\": {{phone}},\r\n        \"name\": \"TestUser\",\r\n        \"password\": \"123as123\",\r\n        \"type\": \"PERSONAL\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://matirbank-api.herokuapp.com/accounts/register/",
+					"protocol": "https",
+					"host": [
+						"matirbank-api",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"accounts",
+						"register",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accounts Balance Check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('initial balance is zero', ()=>{\r",
+							"    myResponse = pm.response.json()\r",
+							"    pm.expect(myResponse.data.balance).to.eql(0.0)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "token {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://matirbank-api.herokuapp.com/accounts/",
+					"protocol": "https",
+					"host": [
+						"matirbank-api",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"accounts",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
