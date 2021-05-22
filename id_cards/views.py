@@ -2,7 +2,7 @@ from matir_bank.core import response_maker
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import IdCard
-from .serializers import IdCardSerializer, IdCardMutationSerializer
+from .serializers import IdCardSerializer, IdCardMutationSerializer, IdCardPathSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 import os
@@ -22,7 +22,7 @@ class SingleIdCard(APIView):
         if(len(id_cards) > 0):
             id_card = id_cards[0]
         
-        serializer = IdCardSerializer(id_card, many=False)
+        serializer = IdCardPathSerializer(id_card, many=False, context={'request': request})
         return response_maker.Ok(serializer.data)
 
     def post(self, request, format=None):
