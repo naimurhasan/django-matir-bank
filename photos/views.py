@@ -46,9 +46,15 @@ class SinglePhoto(APIView):
                 serializer = PhotoMutationSerializer(photo, data=request.data)
                 serializer.is_valid()
 
-                os.remove(photo.image.path)
+                if os.path.exists(photo.image.path):
+                   os.remove(photo.image.path)
+         
 
                 serializer.save()
-                return response_maker.Ok(serializer.data)
+
+                # response with beautiful url
+                path_serializer = PhotoPathSerializer(serializer.data, context={'request': request})
+                
+                return response_maker.Ok(path_serializer.data)
 
         return response_maker.Error(serializer.errors)

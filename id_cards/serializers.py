@@ -23,6 +23,8 @@ class IdCardPathSerializer(serializers.ModelSerializer):
     def get_image(self, obj):
         if type(obj).__name__ == "dict":
             return None
+        elif type(obj).__name__ == "ReturnDict": 
+            return '{}{}'.format(get_current_host(self.context['request'])[:-1], obj['image'])
         return '{}{}{}'.format(get_current_host(self.context['request'])[:-1], settings.MEDIA_URL, obj.image)
 
 class IdCardMutationSerializer(serializers.ModelSerializer):

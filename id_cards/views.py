@@ -44,10 +44,14 @@ class SingleIdCard(APIView):
                 id_card = id_cards[0]
                 serializer = IdCardMutationSerializer(id_card, data=request.data)
                 serializer.is_valid()
-
-                os.remove(id_card.image.path)
+                
+                if os.path.exists(id_card.image.path):
+                    os.remove(id_card.image.path)
 
                 serializer.save()
-                return response_maker.Ok(serializer.data)
+                # response with beautiful url
+                path_serializer = IdCardPathSerializer(serializer.data, context={'request': request})
+                
+                return response_maker.Ok(path_serializer.data)
 
         return response_maker.Error(serializer.errors)
