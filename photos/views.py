@@ -39,7 +39,10 @@ class SinglePhoto(APIView):
             # create new
             if(len(photos) < 1):
                 serializer.save()
-                return response_maker.Ok(serializer.data)
+                # response with beautiful url
+                path_serializer = PhotoPathSerializer(serializer.data, context={'request': request})
+                
+                return response_maker.Ok(path_serializer.data)
             else:
                 # update existing
                 photo = photos[0]
