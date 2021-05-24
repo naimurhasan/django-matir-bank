@@ -14,7 +14,7 @@ def apiOverview(request):
         'Add Fund [Post]':'/add-fund',
         'Mobile Topup [Post]':'/top-up',
         "Accounts: [Get] (Self Account Info)" : "/accounts",
-        "Any account name, photo: [Get]" : "/accounts/phone",
+        "Any account name, photo: [Get]" : "/accounts/get/phone/",
         "Accounts: [Register]" : "/accounts/register/",
         "Accounts: [Login]" : "/accounts/login/",
         "Accounts: [Logout]" : "/accounts/logout/",

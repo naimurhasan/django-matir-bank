@@ -11,6 +11,6 @@ urlpatterns = [
     # '' meansa /accounts/
     path('', AccountOverview.as_view(), name='account-overview'),
     #  means /accounts/phone
-    path('<str:phone>/', SingleAccount.as_view(), name='account-name'),
+    path('get/<str:phone>/', SingleAccount.as_view(), name='account-name'),
 
 ]

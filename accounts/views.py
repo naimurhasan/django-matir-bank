@@ -7,6 +7,7 @@ from django.core import serializers
 from django.http import Http404
 from django.conf import settings
 from matir_bank.core.hostname import get_current_host
+from photos.serializers import PhotoPathSerializer, PhotoSerializer
 
 class AccountOverview(APIView):
     """
@@ -57,10 +58,16 @@ class SingleAccount(APIView):
             raise Http404
 
     def get(self, request, phone, format=None):
-        account = self.get_object(phone, request.user.phone)
+        account = self.get_object(phone)
+
+        photo = account.photo_set.all()[:1].values()[0]  if account.photo_set.all()[:1] else None
         
+        if photo != None:
+            photo['image'] = get_current_host(request)[:-1]+settings.MEDIA_URL+photo['image']
+
+
         return response_maker.Ok({
+            'id': account.id,
             'name': account.name,
-            'phone': account.phone,
-            'photo':  account.photo_set.all()[:1].values() if account.photo_set.all()[:1] else None
+            'photo':  photo
             })
