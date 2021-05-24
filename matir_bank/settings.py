@@ -150,7 +150,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
         'knox.auth.TokenAuthentication',
-    ]
+    ],
+    'COERCE_DECIMAL_TO_STRING': False
 }
 
 ALLOWED_HOSTS = ['ebanking-api.herokuapp.com', 'localhost', 'matirbank-api.herokuapp.com']

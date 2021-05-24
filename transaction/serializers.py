@@ -29,7 +29,12 @@ class AddFundSerializer(TransactionPostSerializer):
 
     class Meta:
         model = Transaction
-        fields = ('amount', 'card_id')      
+        fields = ('amount', 'card_id')
+
+    def create(self, validated_data):
+        card_id = validated_data.pop('card_id')
+        validated_data['additional'] = card_id 
+        return Transaction.objects.create(**validated_data)
     
 
 # TransactionPostSerializer Added So we get validate amount method auto

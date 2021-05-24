@@ -112,7 +112,7 @@ class AddFundView(APIView):
         
         if serializer.is_valid():
             
-            # check if the card exit
+            # check if the card exist
             try:
                 card = Card.objects.get(pk=serializer.validated_data['card_id'])
                 
@@ -122,12 +122,11 @@ class AddFundView(APIView):
             except Card.DoesNotExist:
                 return response_maker.NotFound({'detail': 'Card Not Found'})
 
-            
-            serializer.save(destination=request.user.phone, type='Card')
+            transaction = serializer.save(source=1, destination=request.user.id, type='Card')
             request.user.balance = request.user.balance+Decimal(request.data['amount'])
             request.user.balance_last_update = datetime.now()
-            request.user.save()
-            return response_maker.Ok(serializer.data)
+            tserializer = TransactionSerializer(transaction)
+            return response_maker.Ok(tserializer.data)
 
         return response_maker.Error(serializer.errors)
 
