@@ -12,6 +12,7 @@ from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
 from matir_bank.core import response_maker
+from datetime import datetime, timedelta
 
 # from django.contrib.auth.models import User
 
@@ -41,6 +42,14 @@ class LoginAPI(KnoxLoginView):
             user = serializer.validated_data['user']
             login(request, user)
             temp_list=super(LoginAPI, self).post(request, format=None)
+
+
+            expirate_datetime = datetime.strptime(temp_list.data['expiry'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            cur_datetime = datetime.now()
+
+            timedelta = expirate_datetime - cur_datetime
+            temp_list.data['expires_in'] = timedelta.seconds
+
             return response_maker.Ok(temp_list.data)
         
         return response_maker.Error(serializer.errors) 
