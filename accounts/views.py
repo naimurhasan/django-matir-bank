@@ -64,7 +64,9 @@ class SingleAccount(APIView):
         
         if photo != None:
             photo['image'] = get_current_host(request)[:-1]+settings.MEDIA_URL+photo['image']
-
+            photo.pop('id')
+            photo.pop('user_id')
+            
 
         return response_maker.Ok({
             'id': account.id,
