@@ -1,8 +1,12 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from enum import Enum
+from matir_bank.core.upload_path_maker import upload_path_maker
 User = get_user_model()
 
+
+def image_upload_path(instance, filename):
+    return upload_path_maker('id_cards', instance, filename)
 
 class IdCard(models.Model):
     
@@ -24,7 +28,7 @@ class IdCard(models.Model):
         max_length=17,
         choices=ID_CARD_TYPE_CHOICES,
     )
-    image = models.ImageField(upload_to='id_card/')
+    image = models.ImageField(upload_to=image_upload_path)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     created_at = models.DateTimeField(auto_now_add=True)
