@@ -77,7 +77,7 @@ class Account(AbstractBaseUser):
     objects = AccountManager()
 
     def __str__(self):
-        return self.phone
+        return self.name+' '+self.phone
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
