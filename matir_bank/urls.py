@@ -28,6 +28,4 @@ urlpatterns = [
     path('photo/', include('photos.urls')),
     path('id_card/', include('id_cards.urls')),
     path('transaction/', include('transaction.urls')),
-    path('add-fund/', AddFundView.as_view(), name='add-fund'),
-    path('top-up/', MobileTopup.as_view(), name="topup"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

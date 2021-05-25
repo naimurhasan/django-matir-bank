@@ -155,5 +155,6 @@ REST_FRAMEWORK = {
 }
 
 ALLOWED_HOSTS = ['ebanking-api.herokuapp.com', 'localhost', 'matirbank-api.herokuapp.com']
+USE_TZ = True
 
 django_heroku.settings(locals())

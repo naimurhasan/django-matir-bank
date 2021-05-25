@@ -22,7 +22,7 @@ class TransactionPostSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Must Be Positive')
         return value
 
-
+#  add fund serializer
 class AddFundSerializer(TransactionPostSerializer):
 
     card_id = serializers.IntegerField(required=True)
@@ -35,6 +35,18 @@ class AddFundSerializer(TransactionPostSerializer):
         card_id = validated_data.pop('card_id')
         validated_data['additional'] = card_id 
         return Transaction.objects.create(**validated_data)
+
+#  send moneyh
+class SendMoneySerializer(TransactionPostSerializer):
+
+    class Meta:
+        model = Transaction
+        fields = ('amount', 'destination')
+
+    # def create(self, validated_data):
+    #     card_id = validated_data.pop('card_id')
+    #     validated_data['additional'] = card_id 
+    #     return Transaction.objects.create(**validated_data)
     
 
 # TransactionPostSerializer Added So we get validate amount method auto
