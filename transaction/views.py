@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 from .models import Transaction
 from accounts.models import Account
@@ -16,6 +18,7 @@ from datetime import datetime
 from django.http import Http404
 # for or query
 from django.db.models import Q
+from matir_bank.core import reserved_accounts
 
 # Create your views here.
 class TransactionView(APIView):
@@ -122,9 +125,22 @@ class AddFundView(APIView):
             except Card.DoesNotExist:
                 return response_maker.NotFound({'detail': 'Card Not Found'})
 
-            transaction = serializer.save(source=1, destination=request.user.id, type='Card')
-            request.user.balance = request.user.balance+Decimal(request.data['amount'])
+            transaction = serializer.save(source=reserved_accounts.CARD_USER_ID, destination=request.user.id, type='Card')
+            
+            # update user balance
+            request.user.balance = request.user.balance+Decimal(serializer.validated_data['amount'])
             request.user.balance_last_update = datetime.now()
+            request.user.save()
+
+            # update card balance
+            try:
+                card = User.objects.get(pk=reserved_accounts.CARD_USER_ID)
+                card.balance = card.balance - serializer.validated_data['amount']
+                card.balance_last_update = datetime.now()
+                card.save()
+            except:
+                return response_maker.Error({'detail': 'Card Not Found'})
+
             tserializer = TransactionSerializer(transaction)
             return response_maker.Ok(tserializer.data)
 

@@ -3,6 +3,9 @@
 from django.db import migrations
 import random
 import string
+from matir_bank.core.reserved_accounts import accounts_name
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 def insertReservedAccounts(apps, schema_editor):
     # We can't import the Person model directly as it may be a newer
@@ -10,20 +13,21 @@ def insertReservedAccounts(apps, schema_editor):
     Account = apps.get_model("accounts", "Account")
 
     # Creating Dummy Accounts on Migration
-    accounts_name = ['Charge', 'Card', 'TopUp', 'Earth Donation', 'Electricity Bill']
+    
     
     for i in range(100):
         # generating uniuqe password
-        passwrd = ''.join(random.choice(string.printable) for i in range(12))
+        passwrd = ''.join(random.choice(string.printable) for i in range(16))
         
         # add number 001, 002
         n = 3
         pad = '0'
         
         acc_name = accounts_name[i] if i < len(accounts_name) else 'Reserved'
-        acc = Account(phone='01777777'+str(i).rjust(n, pad), name=acc_name, type='MERCHANT', password=passwrd)
+        acc = User(phone='01777777'+str(i).rjust(n, pad), name=acc_name, type='MERCHANT')
+        acc.set_password(passwrd)
                 
-        # if card add initial balance
+        # if account is card add initial balance
         if  i < len(accounts_name) and accounts_name[i] == 'Card':
             acc.balance = 100000;
         acc.save()
