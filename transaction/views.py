@@ -144,7 +144,7 @@ class SendMoney(APIView):
         # check if destination exist
         #  check if desination is a personal
         try:
-            destination = Account.objects.get(pk=serializer.validated_data['destination'])
+            destination = Account.objects.get(phone=serializer.validated_data['destination'])
             if destination.type != 'PERSONAL':
                 return response_maker.Error({'detail': 'You can only send money to personal account.'})
 

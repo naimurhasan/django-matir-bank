@@ -25,11 +25,9 @@ class CarList(APIView):
         return response_maker.Ok(serializer.data)
 
     def post(self, request, format=None):
-     
-        request.data._mutable = True
-        request.data['user'] = request.user.id
-
-        serializer = CardPostSerializer(data=request.data)
+        mutable_data = request.data.copy()
+        mutable_data['user'] = request.user.id
+        serializer = CardPostSerializer(data=mutable_data)
         if serializer.is_valid():
             serializer.save()
             return response_maker.Ok(serializer.data)
